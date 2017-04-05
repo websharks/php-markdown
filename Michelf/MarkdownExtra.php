@@ -1460,13 +1460,17 @@ class MarkdownExtra extends \Michelf\Markdown {
 			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
 		$classes = array();
+
+		if ($this->code_attr_on_pre) {
+			$classes[] = 'code';
+		}
 		if ($classname != "") {
 			if ($classname{0} == '.')
 				$classname = substr($classname, 1);
 			$classes[] = $this->code_class_prefix . $classname;
 		}
 		$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs, null, $classes);
-		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
+		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : ' class="code"';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
 		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
 

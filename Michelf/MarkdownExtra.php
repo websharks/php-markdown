@@ -1470,11 +1470,28 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$classes[] = $this->code_class_prefix . $classname;
 		}
 		$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs, null, $classes);
+
 		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : ' class="code"';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
-		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
+
+		if (!$this->code_attr_on_pre && stripos($code_attr_str, 'title=') !== false) {
+			$code_attr_str = preg_replace_callback('/(?:^|\s)title\="([^"]+)"/ui', function($m) use(&$pre_attr_str) {
+				$pre_attr_str .= ' title="'.$m[1].'"'; // Add `title=""` to `<pre>`.
+				return ''; // Remove it from `<code>`.
+			}, $code_attr_str);
+		}
+		$codeblock = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
 
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
+	}
+
+	/**
+	 * Replace new lines in fenced code blocks
+	 * @param  array $matches
+	 * @return string
+	 */
+	protected function _doFencedCodeBlocks_attributes($matches, &$pre_attr_str) {
+
 	}
 
 	/**

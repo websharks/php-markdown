@@ -1475,7 +1475,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
 
 		if (!$this->code_attr_on_pre && stripos($code_attr_str, 'title=') !== false) {
-			$code_attr_str = preg_replace_callback('/(?:^|\s)title\="([^"]+)"/ui', function($m) use(&$pre_attr_str) {
+			$code_attr_str = preg_replace_callback('/(?:^|\s)title\="([^"]*)"/ui', function($m) use(&$pre_attr_str) {
 				$pre_attr_str .= ' title="'.$m[1].'"'; // Add `title=""` to `<pre>`.
 				return ''; // Remove it from `<code>`.
 			}, $code_attr_str);

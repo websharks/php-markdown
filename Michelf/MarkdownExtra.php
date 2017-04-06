@@ -173,13 +173,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Expression to use to catch attributes (includes the braces)
 	 * @var string
 	 */
-	protected $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|[#.a-z][-_:a-zA-Z0-9=]+)){1,})[ ]*\}';
 
 	/**
 	 * Expression to use when parsing in a context when no capture is desired
 	 * @var string
 	 */
-	protected $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|[#.a-z][-_:a-zA-Z0-9=]+)){1,}[ ]*\}';
 
 	/**
 	 * Parse attributes caught by the $this->id_class_attr_catch_re expression
@@ -199,33 +199,38 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function doExtraAttributes($tag_name, $attr, $defaultIdValue = null, $classes = array()) {
 		if (empty($attr) && !$defaultIdValue && empty($classes)) return "";
 
-		// Split on components
-		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
-		$elements = $matches[0];
+		// Split on components.
+		// Adding support for quoted attribute values.
+		// preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
+		preg_match_all('/(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|[#.a-z][-_:a-zA-Z0-9=]+)/', $attr, $matches);
+		$elements = $matches[0]; // Array of all full matches.
 
-		// Handle classes and IDs (only first ID taken into account)
 		$attributes = array();
-		$id = false;
+		$id = false; // Initialize.
+
 		foreach ($elements as $element) {
 			if ($element{0} == '.') {
 				$classes[] = substr($element, 1);
 			} else if ($element{0} == '#') {
 				if ($id === false) $id = substr($element, 1);
 			} else if (strpos($element, '=') > 0) {
-				$parts = explode('=', $element, 2);
-				$attributes[] = $parts[0] . '="' . $parts[1] . '"';
+				$parts    = explode('=', $element, 2);
+				$parts[1] = isset($parts[1]) ? $parts[1] : '';
+
+				if (isset($parts[1][0]) && ($parts[1][0] === '"' || $parts[1][0] === "'"))
+					$parts[1] = trim($parts[1], $parts[1][0]);
+
+				$attributes[] = htmlspecialchars($parts[0]) . '="' . $this->encodeAttribute($parts[1]) . '"';
 			}
 		}
-
 		if (!$id) $id = $defaultIdValue;
+		$attr_str = ""; // Compose attributes as string.
 
-		// Compose attributes as string
-		$attr_str = "";
 		if (!empty($id)) {
 			$attr_str .= ' id="'.$this->encodeAttribute($id) .'"';
 		}
 		if (!empty($classes)) {
-			$attr_str .= ' class="'. implode(" ", $classes) . '"';
+			$attr_str .= ' class="'. $this->encodeAttribute(implode(" ", $classes)) . '"';
 		}
 		if (!$this->no_markup && !empty($attributes)) {
 			$attr_str .= ' '.implode(" ", $attributes);

@@ -1495,15 +1495,6 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * @param  array $matches
 	 * @return string
 	 */
-	protected function _doFencedCodeBlocks_attributes($matches, &$pre_attr_str) {
-
-	}
-
-	/**
-	 * Replace new lines in fenced code blocks
-	 * @param  array $matches
-	 * @return string
-	 */
 	protected function _doFencedCodeBlocks_newlines($matches) {
 		return str_repeat("<br$this->empty_element_suffix",
 			strlen($matches[0]));

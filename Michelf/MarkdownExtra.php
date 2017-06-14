@@ -173,13 +173,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Expression to use to catch attributes (includes the braces)
 	 * @var string
 	 */
-	protected $id_class_attr_catch_re = '\{((?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[a-z0-9~\-]*[#][-_+~:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,})[ ]*\}';
 
 	/**
 	 * Expression to use when parsing in a context when no capture is desired
 	 * @var string
 	 */
-	protected $id_class_attr_nocatch_re = '\{(?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[a-z0-9~\-]*[#][-_+~:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,}[ ]*\}';
 
 	/**
 	 * Parse attributes caught by the $this->id_class_attr_catch_re expression
@@ -203,7 +203,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		// Adding support for quoted attribute values.
 		// Adding support for hashed CSS utility classes.
 		// preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
-		preg_match_all('/(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[a-z0-9~\-]*[#][-_+~:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)/', $attr, $matches);
+		preg_match_all('/(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)/', $attr, $matches);
 		$elements = $matches[0]; // Array of all full matches.
 
 		$attributes = array();
@@ -306,7 +306,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Tags treated as block tags only if the opening tag is alone on its line
 	 * @var string
 	 */
-	protected $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
+	protected $context_block_tags_re = '[a-zA-Z]\-[a-zA-Z0-9\-]+|script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 
 	/**
 	 * Tags where markdown="1" default to span mode:
@@ -691,7 +691,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				// Check for `markdown="1"` attribute and handle it.
 				if ($md_attr &&
 					preg_match($markdown_attr_re, $tag, $attr_m) &&
-					preg_match('/^1|block|span$/', $attr_m[2] . $attr_m[3]))
+					preg_match('/^(?:1|on|yes|true|block|span)$/', $attr_m[2] . $attr_m[3]))
 				{
 					// Remove `markdown` attribute from opening tag.
 					$tag = preg_replace($markdown_attr_re, '', $tag);

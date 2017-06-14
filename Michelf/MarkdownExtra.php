@@ -306,7 +306,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Tags treated as block tags only if the opening tag is alone on its line
 	 * @var string
 	 */
-	protected $context_block_tags_re = '[a-zA-Z]\-[a-zA-Z0-9\-]+|script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
+	protected $context_block_tags_re = '[a-zA-Z]+\-[a-zA-Z0-9\-]+|script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 
 	/**
 	 * Tags where markdown="1" default to span mode:

@@ -173,13 +173,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Expression to use to catch attributes (includes the braces)
 	 * @var string
 	 */
-	protected $id_class_attr_catch_re = '\{((?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+!%:a-zA-Z0-9]*[@~#][-_+!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,})[ ]*\}';
 
 	/**
 	 * Expression to use when parsing in a context when no capture is desired
 	 * @var string
 	 */
-	protected $id_class_attr_nocatch_re = '\{(?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?>[ ]*(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+!%:a-zA-Z0-9]*[@~#][-_+!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)){1,}[ ]*\}';
 
 	/**
 	 * Parse attributes caught by the $this->id_class_attr_catch_re expression
@@ -203,7 +203,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		// Adding support for quoted attribute values.
 		// Adding support for hashed CSS utility classes.
 		// preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
-		preg_match_all('/(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+~@!%:a-zA-Z0-9]*[#][-_+~@!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)/', $attr, $matches);
+		preg_match_all('/(?:[a-z][-_:a-zA-Z0-9]+\=(?:"[^\v"]*?"|\'[^\v\']*?\')|\.[-_+!%:a-zA-Z0-9]*[@~#][-_+!%:a-zA-Z0-9]+|[#.a-z][-_:a-zA-Z0-9=]+)/', $attr, $matches);
 		$elements = $matches[0]; // Array of all full matches.
 
 		$attributes = array();
